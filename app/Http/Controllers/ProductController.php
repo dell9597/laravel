@@ -30,15 +30,15 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $fields = $request->validate([
-            'productName' => 'required|string',
-            'productType' => 'required|integer',
+            'name' => 'required|string',
+            'type' => 'required|integer',
             'price' => 'required|integer',
         ]);
 
         $newproduct = Product::create(
             [
-                'productName' => $fields['productName'],
-                'productType' => $fields['productType'],
+                'name' => $fields['name'],
+                'type' => $fields['type'],
                 'price' => $fields['price'],
             ]
         );
