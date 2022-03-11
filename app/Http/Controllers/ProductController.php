@@ -14,7 +14,11 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return Product::all();
+        $result = [
+            'name' => 'index',
+            'payload' => Product::all(),
+        ];
+        return $result;
     }
 
     /**
@@ -25,28 +29,24 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $fields = $request->validate([
-            'name' => 'required|string',
-            'type' => 'required|integer',
+            'productName' => 'required|string',
+            'productType' => 'required|integer',
             'price' => 'required|integer',
         ]);
 
-        $product = new Product;
-        $product->name = $fields['name'];
-        $product->price = $fields['price'];
-        $product->type =  $fields['type'];
-        $result = $product->save();
-
-        if($result){
-            $result = [
-                'name' => 'show',
-                'payload' => $product->all(),
-            ];
-            return $result;
-            // return  $result;
-        }
-
+        $newproduct = Product::create(
+            [
+                'productName' => $fields['productName'],
+                'productType' => $fields['productType'],
+                'price' => $fields['price'],
+            ]
+        );
+        $result = [
+            'name' => 'store',
+            'payload' => $newproduct,
+        ];
+        return response($result, 201);
     }
 
     /**
@@ -62,7 +62,6 @@ class ProductController extends Controller
             'payload' => Product::find($id),
         ];
         return $result;
-
     }
 
     /**
@@ -74,7 +73,6 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
         $product = Product::find($id)->update($request->all());
         $result = [
             'name' => 'update',
@@ -91,11 +89,11 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
-        $product =  Product::find($id)->delete();
+        Product::where('id', $id)->delete();
+
         $result = [
             'name' => 'destroy',
-            'payload' => $product,
+            'payload' => 'deleted',
         ];
         return $result;
     }
